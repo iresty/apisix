@@ -160,11 +160,12 @@ local function pick_server(route, ctx)
     core.log.info("route: ", core.json.delay_encode(route, true))
     core.log.info("ctx: ", core.json.delay_encode(ctx, true))
     local up_conf = ctx.upstream_conf
+    local version = ctx.upstream_version
     if up_conf.service_name then
         if not discovery then
             return nil, "discovery is uninitialized"
         end
-        up_conf.nodes = discovery.nodes(up_conf.service_name)
+        up_conf.nodes, version = discovery.nodes(up_conf.service_name)
     end
 
     local nodes_count = up_conf.nodes and #up_conf.nodes or 0
@@ -193,7 +194,6 @@ local function pick_server(route, ctx)
     end
 
     local healthcheck_parent = ctx.upstream_healthcheck_parent
-    local version = ctx.upstream_version
     local key = ctx.upstream_key
     local checker = fetch_healthchecker(up_conf, healthcheck_parent, version)
     ctx.up_checker = checker

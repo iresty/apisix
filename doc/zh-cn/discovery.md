@@ -51,7 +51,7 @@
 APISIX 要扩展注册中心其实是件非常容易的事情，其基本步骤如下：
 
 1. 在 `apisix/discovery/` 目录中添加注册中心客户端的实现；
-2. 实现用于初始化的 `_M.init_worker()` 函数以及用于获取服务实例节点列表的 `_M.nodes(service_name)` 函数；
+2. 实现用于初始化的 `_M.init_worker()` 函数以及用于获取服务实例节点列表及版本的 `_M.nodes(service_name)` 函数；
 3. 将注册中心数据转换为 APISIX 格式的数据；
 
 ### 以 Eureka 举例
@@ -60,7 +60,7 @@ APISIX 要扩展注册中心其实是件非常容易的事情，其基本步骤�
 
 首先在 `apisix/discovery/` 目录中添加 [`eureka.lua`](../../apisix/discovery/eureka.lua);
 
-然后在 `eureka.lua` 实现用于初始化的 `init_worker` 函数以及用于获取服务实例节点列表的 `nodes` 函数即可：
+然后在 `eureka.lua` 实现用于初始化的 `init_worker` 函数以及用于获取服务实例节点列表及版本的 `nodes` 函数即可：
 
   ```lua
   local _M = {
@@ -70,6 +70,7 @@ APISIX 要扩展注册中心其实是件非常容易的事情，其基本步骤�
 
   function _M.nodes(service_name)
       ... ...
+      return nodes, up_version
   end
 
 

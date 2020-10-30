@@ -33,6 +33,7 @@ local log                = core.log
 
 local default_weight
 local applications
+local up_version = 0
 
 local schema = {
     type = "object",
@@ -217,6 +218,7 @@ local function fetch_full_registry(premature)
         end
     end
     applications = up_apps
+    up_version = up_version + 1
 end
 
 
@@ -226,7 +228,7 @@ function _M.nodes(service_name)
         return
     end
 
-    return applications[service_name]
+    return applications[service_name], up_version
 end
 
 

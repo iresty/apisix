@@ -51,7 +51,7 @@ It is very easy for APISIX to extend the discovery client, the basic steps are a
 
 1. Add the implementation of registry client in the 'apisix/discovery/' directory;
 
-2. Implement the `_M. init_worker()` function for initialization and the `_M. nodes(service_name)` function for obtaining the list of service instance nodes;
+2. Implement the `_M. init_worker()` function for initialization and the `_M. nodes(service_name)` function for obtaining the list of service instance nodes and version;
 
 3. Convert the registry data into data in APISIX;
 
@@ -62,7 +62,7 @@ It is very easy for APISIX to extend the discovery client, the basic steps are a
 
 First, add [`eureka.lua`](../apisix/discovery/eureka.lua) in the `apisix/discovery/` directory;
 
-Then implement the `_M.init_worker()` function for initialization and the `_M.nodes(service_name)` function for obtaining the list of service instance nodes in ` eureka.lua`:
+Then implement the `_M.init_worker()` function for initialization and the `_M.nodes(service_name)` function for obtaining the list of service instance nodes and version in ` eureka.lua`:
 
   ```lua
   local _M = {
@@ -72,6 +72,7 @@ Then implement the `_M.init_worker()` function for initialization and the `_M.no
 
   function _M.nodes(service_name)
       ... ...
+      return nodes, up_version
   end
 
 
