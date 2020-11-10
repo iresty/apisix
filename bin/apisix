@@ -291,6 +291,7 @@ start:      start the apisix server
 stop:       stop the apisix server
 restart:    restart the apisix server
 reload:     reload the apisix server
+reopen:     reopening the log files
 version:    print the version of apisix
 ]])
 end
@@ -645,6 +646,24 @@ function _M.reload()
     local test_ret = os.execute((test_cmd))
     if (test_ret == 0 or test_ret == true) then
         local cmd = env.openresty_args .. [[ -s reload]]
+        -- print(cmd)
+        os.execute(cmd)
+        return
+    end
+    print("test openresty failed")
+end
+
+function _M.reopen()
+    -- reinit nginx.conf
+    init()
+
+    local test_cmd = openresty_args .. [[ -t -q ]]
+    -- When success,
+    -- On linux, os.execute returns 0,
+    -- On macos, os.execute returns 3 values: true, exit, 0, and we need the first.
+    local test_ret = os.execute((test_cmd))
+    if (test_ret == 0 or test_ret == true) then
+        local cmd = openresty_args .. [[ -s reopen]]
         -- print(cmd)
         os.execute(cmd)
         return
