@@ -86,6 +86,9 @@ run: default
 ifeq ("$(wildcard logs/nginx.pid)", "")
 	mkdir -p logs
 	$(OR_EXEC) -p $$PWD/ -c $$PWD/conf/nginx.conf
+else ifeq ("$(shell lsof -p $(shell cat logs/nginx.pid))", "")
+	@echo "logs/nginx.pid exists but there's no corresponding process, the file will be overwritten"
+	$(OR_EXEC) -p $$PWD/ -c $$PWD/conf/nginx.conf
 else
 	@echo "APISIX is running..."
 endif
