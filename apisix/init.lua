@@ -824,6 +824,12 @@ function _M.stream_init_worker()
     -- for testing only
     core.log.info("random stream test in [1, 10000]: ", math.random(1, 10000))
 
+    local we = require("resty.worker.events")
+    local ok, err = we.configure({shm = "worker-events-stream", interval = 0.1})
+    if not ok then
+        error("failed to init worker event: " .. err)
+    end
+
     router.stream_init_worker()
     plugin.init_worker()
 
@@ -900,7 +906,10 @@ end
 function _M.stream_log_phase()
     core.log.info("enter stream_log_phase")
     -- core.ctx.release_vars(api_ctx)
-    run_plugin("log")
+    local api_ctx = run_plugin("log")
+    if api_ctx then
+        healcheck_passive(api_ctx)
+    end
 end
 
 

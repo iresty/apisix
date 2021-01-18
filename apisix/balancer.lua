@@ -22,7 +22,6 @@ local set_more_tries   = balancer.set_more_tries
 local get_last_failure = balancer.get_last_failure
 local set_timeouts     = balancer.set_timeouts
 
-
 local module_name = "balancer"
 local pickers = {}
 

@@ -64,6 +64,8 @@ stream {
     lua_socket_log_errors off;
 
     lua_shared_dict lrucache-lock-stream   10m;
+    lua_shared_dict worker-events-stream   10m;
+    lua_shared_dict upstream-healthcheck-stream 10m;
 
     resolver {% for _, dns_addr in ipairs(dns_resolver or {}) do %} {*dns_addr*} {% end %} valid={*dns_resolver_valid*};
     resolver_timeout {*resolver_timeout*};

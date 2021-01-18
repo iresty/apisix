@@ -24,7 +24,10 @@ local ipairs = ipairs
 local pairs = pairs
 local upstreams
 local healthcheck
-
+local healthcheck_shm_name = "upstream-healthcheck"
+if ngx.config.subsystem == "stream" then
+    healthcheck_shm_name = healthcheck_shm_name .. "-" .. ngx.config.subsystem
+end
 
 local _M = {}
 
@@ -72,7 +75,7 @@ local function create_checker(upstream)
 
     local checker, err = healthcheck.new({
         name = "upstream#" .. healthcheck_parent.key,
-        shm_name = "upstream-healthcheck",
+        shm_name = healthcheck_shm_name,
         checks = upstream.checks,
     })
 
