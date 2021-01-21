@@ -316,6 +316,46 @@ local function set_upstream_host(api_ctx)
 end
 
 
+local function load_upstream_by_id(up_id, api_ctx)
+    local upstreams = core.config.fetch_created_obj("/upstreams")
+    if not upstreams then
+        core.log.error("failed to find upstreams by id: " .. up_id)
+        return core.response.exit(500)
+    end
+
+    local upstream = upstreams:get(tostring(up_id))
+    if not upstream then
+        core.log.error("failed to find upstream by id: " .. up_id)
+        return core.response.exit(500)
+    end
+
+    if upstream.has_domain then
+        -- try to fetch the resolved domain, if we got `nil`,
+        -- it means we need to create the cache by handle.
+        -- the `api_ctx.conf_version` is different after we called
+        -- `parse_domain_in_up`, need to recreate the cache by new
+        -- `api_ctx.conf_version`
+        local err
+        upstream, err = lru_resolved_domain(upstream,
+            upstream.modifiedIndex,
+            parse_domain_in_up,
+            upstream)
+        if err then
+            core.log.error("failed to get resolved upstream: ", err)
+            return core.response.exit(500)
+        end
+    end
+
+    if upstream.value.pass_host then
+        api_ctx.pass_host = upstream.value.pass_host
+        api_ctx.upstream_host = upstream.value.upstream_host
+    end
+
+    core.log.info("parsed upstream: ", core.json.delay_encode(upstream))
+    api_ctx.matched_upstream = upstream.dns_value or upstream.value
+end
+
+
 function _M.http_access_phase()
     local ngx_ctx = ngx.ctx
     -- always fetch table from the table pool, we don't need a reused api_ctx
@@ -414,44 +454,13 @@ function _M.http_access_phase()
 
     local up_id = route.value.upstream_id
     if up_id then
-        local upstreams = core.config.fetch_created_obj("/upstreams")
-        if upstreams then
-            local upstream = upstreams:get(tostring(up_id))
-            if not upstream then
-                core.log.error("failed to find upstream by id: " .. up_id)
-                return core.response.exit(502)
-            end
+        load_upstream_by_id(up_id, api_ctx)
 
-            if upstream.has_domain then
-                -- try to fetch the resolved domain, if we got `nil`,
-                -- it means we need to create the cache by handle.
-                -- the `api_ctx.conf_version` is different after we called
-                -- `parse_domain_in_up`, need to recreate the cache by new
-                -- `api_ctx.conf_version`
-                local err
-                upstream, err = lru_resolved_domain(upstream,
-                                                    upstream.modifiedIndex,
-                                                    parse_domain_in_up,
-                                                    upstream)
-                if err then
-                    core.log.error("failed to get resolved upstream: ", err)
-                    return core.response.exit(500)
-                end
-            end
-
-            if upstream.value.enable_websocket then
-                core.log.warn("DEPRECATE: enable websocket in upstream will be removed soon. ",
-                              "Please enable it in route/service level.")
-                enable_websocket = true
-            end
-
-            if upstream.value.pass_host then
-                api_ctx.pass_host = upstream.value.pass_host
-                api_ctx.upstream_host = upstream.value.upstream_host
-            end
-
-            core.log.info("parsed upstream: ", core.json.delay_encode(upstream))
-            api_ctx.matched_upstream = upstream.dns_value or upstream.value
+        local upstream_value = api_ctx.matched_upstream
+        if upstream_value.enable_websocket then
+            core.log.warn("DEPRECATE: enable websocket in upstream will be removed soon. ",
+                "Please enable it in route/service level.")
+            enable_websocket = true
         end
 
     else
@@ -588,10 +597,14 @@ function _M.grpc_access_phase()
     end
 
     -- todo: support upstream id
-
-    api_ctx.matched_upstream = (route.dns_value and
-                                route.dns_value.upstream)
-                               or route.value.upstream
+    local up_id = route.value.upstream_id
+    if up_id then
+        load_upstream_by_id(up_id, api_ctx)
+    else
+        api_ctx.matched_upstream = (route.dns_value and
+                                    route.dns_value.upstream)
+                                   or route.value.upstream
+    end
 
     local plugins = core.tablepool.fetch("plugins", 32, 0)
     api_ctx.plugins = plugin.filter(route, plugins)
