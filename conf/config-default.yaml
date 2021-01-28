@@ -200,7 +200,7 @@ etcd:
   tls:
     verify: true                  # whether to verify the etcd endpoint certificate when setup a TLS connection to etcd,
                                   # the default value is true, e.g. the certificate will be verified strictly.
-
+  debug: true                     # this debug print res_put
 # discovery:                      # service discovery center
 #   eureka:
 #     host:                       # it's possible to define multiple eureka hosts addresses of the same eureka cluster.

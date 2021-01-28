@@ -407,8 +407,8 @@ Please modify "admin_key" in conf/config.yaml .
 end
 
 
-local function init_etcd(env, show_output)
-    etcd.init(env, show_output)
+local function init_etcd(env)
+    etcd.init(env)
 end
 
 
@@ -446,7 +446,7 @@ local function start(env, ...)
     end
 
     init(env, ...)
-    init_etcd(env, ...)
+    init_etcd(env)
 
     execute(env.openresty_args)
 end
