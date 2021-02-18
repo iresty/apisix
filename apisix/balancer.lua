@@ -17,6 +17,7 @@
 local require     = require
 local balancer    = require("ngx.balancer")
 local core        = require("apisix.core")
+local ngx = ngx
 local ipairs      = ipairs
 local set_more_tries   = balancer.set_more_tries
 local get_last_failure = balancer.get_last_failure
@@ -162,8 +163,9 @@ local function pick_server(route, ctx)
     if checker then
         version = version .. "#" .. checker.status_ver
     end
+    local cache_key = key..ngx.md5(up_conf.nodes)
 
-    local server_picker = lrucache_server_picker(key, version,
+    local server_picker = lrucache_server_picker(cache_key, version,
                             create_server_picker, up_conf, checker)
     if not server_picker then
         return nil, "failed to fetch server picker"
