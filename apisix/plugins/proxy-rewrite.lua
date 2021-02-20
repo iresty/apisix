@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require     = require
 local core        = require("apisix.core")
 local plugin_name = "proxy-rewrite"
 local pairs       = pairs

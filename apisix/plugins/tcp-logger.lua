@@ -14,7 +14,9 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-local core     = require("apisix.core")
+
+local require = require
+local core = require("apisix.core")
 local log_util = require("apisix.utils.log-util")
 local batch_processor = require("apisix.utils.batch-processor")
 local plugin_name = "tcp-logger"

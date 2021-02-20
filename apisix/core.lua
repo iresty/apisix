@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local log = require("apisix.core.log")
 local utils = require("apisix.core.utils")
 local local_conf, err = require("apisix.core.config_local").local_conf()

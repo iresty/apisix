@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local rediscluster = require("resty.rediscluster")
 local core = require("apisix.core")
 local resty_lock = require("resty.lock")

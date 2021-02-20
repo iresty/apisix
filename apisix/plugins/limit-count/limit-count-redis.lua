@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local redis_new = require("resty.redis").new
 local core = require("apisix.core")
 local resty_lock = require("resty.lock")

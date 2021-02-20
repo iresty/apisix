@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local core = require("apisix.core")
 local re_compile = require("resty.core.regex").re_match_compile
 local re_find = ngx.re.find

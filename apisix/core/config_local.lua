@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local file = require("apisix.cli.file")
 
 

@@ -14,13 +14,15 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-local util   = require("apisix.plugins.grpc-transcode.util")
-local core   = require("apisix.core")
-local pb     = require("pb")
-local ngx    = ngx
-local string = string
-local table  = table
-local ipairs = ipairs
+
+local require = require
+local util    = require("apisix.plugins.grpc-transcode.util")
+local core    = require("apisix.core")
+local pb      = require("pb")
+local ngx     = ngx
+local string  = string
+local table   = table
+local ipairs  = ipairs
 
 return function(proto, service, method, pb_option)
     local m = util.find_method(proto, service, method)

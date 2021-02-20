@@ -14,10 +14,12 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-local core     = require("apisix.core")
+
+local require = require
+local core = require("apisix.core")
 local consumer_mod = require("apisix.consumer")
 local plugin_name = "key-auth"
-local ipairs   = ipairs
+local ipairs = ipairs
 
 
 local lrucache = core.lrucache.new({

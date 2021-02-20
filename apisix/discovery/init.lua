@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require      = require
 local log          = require("apisix.core.log")
 local local_conf   = require("apisix.core.config_local").local_conf()
 local pairs        = pairs

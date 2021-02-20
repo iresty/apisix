@@ -14,7 +14,9 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-local core   = require("apisix.core")
+
+local require = require
+local core = require("apisix.core")
 local plugin_checker = require("apisix.plugin").plugin_checker
 local ipairs = ipairs
 local services

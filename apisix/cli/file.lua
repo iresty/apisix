@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local yaml = require("tinyyaml")
 local profile = require("apisix.core.profile")
 local util = require("apisix.cli.util")

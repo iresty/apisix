@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local core = require("apisix.core")
 local log_util = require("apisix.utils.log-util")
 local batch_processor = require("apisix.utils.batch-processor")

@@ -14,12 +14,13 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local sw_tracer = require("skywalking.tracer")
 local core = require("apisix.core")
 local process = require("ngx.process")
 local ngx = ngx
 local math = math
-local require = require
 
 local plugin_name = "skywalking"
 local metadata_schema = {

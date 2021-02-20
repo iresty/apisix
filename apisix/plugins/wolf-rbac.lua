@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require  = require
 local core     = require("apisix.core")
 local consumer = require("apisix.consumer")
 local json     = require("apisix.core.json")

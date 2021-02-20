@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local core = require("apisix.core")
 local ngx_re = require("ngx.re")
 local tab_concat = table.concat

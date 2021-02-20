@@ -14,7 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
-
+local require = require
 local roundrobin  = require("resty.roundrobin")
 local core = require("apisix.core")
 local nkeys = core.table.nkeys

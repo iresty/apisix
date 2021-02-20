@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local pkg_cpath_org = package.cpath
 local pkg_path_org = package.path
 

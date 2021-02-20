@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local base64_encode = require("base64").encode
 local dkjson = require("dkjson")
 local util = require("apisix.cli.util")

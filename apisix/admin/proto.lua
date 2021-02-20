@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local type = type
 local ipairs = ipairs
 local core = require("apisix.core")

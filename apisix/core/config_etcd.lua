@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require      = require
 local table        = require("apisix.core.table")
 local config_local = require("apisix.core.config_local")
 local log          = require("apisix.core.log")

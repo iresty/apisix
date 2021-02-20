@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local core = require("apisix.core")
 local timers = require("apisix.timers")
 local process = require("ngx.process")

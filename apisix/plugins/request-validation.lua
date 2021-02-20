@@ -14,10 +14,12 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require       = require
 local core          = require("apisix.core")
 local plugin_name   = "request-validation"
 local ngx           = ngx
-local io           = io
+local io            = io
 local req_read_body = ngx.req.read_body
 local req_get_body_data = ngx.req.get_body_data
 

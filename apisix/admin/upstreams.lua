@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local core = require("apisix.core")
 local get_routes = require("apisix.router").http_routes
 local get_services = require("apisix.http.service").services

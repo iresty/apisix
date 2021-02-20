@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require          = require
 local fetch_local_conf = require("apisix.core.config_local").local_conf
 local etcd             = require("resty.etcd")
 local clone_tab        = require("table.clone")

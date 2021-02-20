@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local core = require("apisix.core")
 local schema_plugin = require("apisix.admin.plugins").stream_check_schema
 local tostring = tostring

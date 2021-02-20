@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local ver = require("apisix.core.version")
 local etcd = require("apisix.cli.etcd")
 local util = require("apisix.cli.util")

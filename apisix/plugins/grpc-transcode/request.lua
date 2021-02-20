@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local util   = require("apisix.plugins.grpc-transcode.util")
 local core   = require("apisix.core")
 local pb     = require("pb")

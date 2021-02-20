@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local jsonschema = require('jsonschema')
 local lrucache = require("apisix.core.lrucache")
 local cached_validator = lrucache.new({count = 1000, ttl = 0})

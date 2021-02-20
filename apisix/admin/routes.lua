@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local expr = require("resty.expr.v1")
 local core = require("apisix.core")
 local schema_plugin = require("apisix.admin.plugins").check_schema

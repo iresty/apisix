@@ -14,6 +14,7 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+local require = require
 local core    = require("apisix.core")
 local ngx_time = ngx.time
 

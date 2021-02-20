@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local lru_new = require("resty.lrucache").new
 local resty_lock = require("resty.lock")
 local log = require("apisix.core.log")

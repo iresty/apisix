@@ -14,10 +14,12 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local base_prometheus = require("prometheus")
-local core      = require("apisix.core")
-local ipairs    = ipairs
-local ngx       = ngx
+local core = require("apisix.core")
+local ipairs = ipairs
+local ngx = ngx
 local ngx_capture = ngx.location.capture
 local re_gmatch = ngx.re.gmatch
 local select = select

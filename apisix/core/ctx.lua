@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require      = require
 local core_str     = require("apisix.core.string")
 local core_tab     = require("apisix.core.table")
 local request      = require("apisix.core.request")

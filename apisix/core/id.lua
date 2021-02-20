@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require          = require
 local fetch_local_conf = require("apisix.core.config_local").local_conf
 local try_read_attr    = require("apisix.core.table").try_read_attr
 local log              = require("apisix.core.log")

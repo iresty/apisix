@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local resty_http = require "resty.http"
 local to_hex = require "resty.string".to_hex
 local cjson = require "cjson.safe".new()

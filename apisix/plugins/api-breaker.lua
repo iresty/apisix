@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local core = require("apisix.core")
 local plugin_name = "api-breaker"
 local ngx = ngx

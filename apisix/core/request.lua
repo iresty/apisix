@@ -15,6 +15,7 @@
 -- limitations under the License.
 --
 
+local require = require
 local lfs = require("lfs")
 local log = require("apisix.core.log")
 local ngx = ngx

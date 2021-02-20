@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local limit_conn_new = require("resty.limit.conn").new
 local core = require("apisix.core")
 local sleep = core.sleep

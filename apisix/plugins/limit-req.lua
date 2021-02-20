@@ -14,6 +14,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 --
+
+local require = require
 local limit_req_new = require("resty.limit.req").new
 local core = require("apisix.core")
 local plugin_name = "limit-req"
