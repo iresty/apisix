@@ -546,6 +546,7 @@ APISIX 的 Upstream 除了基本的复杂均衡算法选择外，还支持对上
 * `chash`: 一致性哈希
 * `ewma`: 选择延迟最小的节点，计算细节参考 https://en.wikipedia.org/wiki/EWMA_chart
 * `least_conn`: 选择 `(active_conn + 1) / weight` 最小的节点。注意这里的 `active connection` 概念跟 Nginx 的相同：它是当前正在被请求使用的连接。
+* `swrr`: 平滑的基于权重的轮询算法（smooth weighted round-robin）
 
 `hash_on` 比较复杂，这里专门说明下：
 
