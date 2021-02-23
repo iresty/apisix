@@ -64,6 +64,7 @@ dependencies = {
     "argparse = 0.7.1-1",
     "luasocket = 3.0rc1-2",
     "luasec = 0.9-1",
+    "amqp-client = 1.4.0-1",
 }
 
 build = {

@@ -237,6 +237,7 @@ plugins:                          # plugin list (sorted in alphabetical order)
   - ip-restriction
   - jwt-auth
   - kafka-logger
+  - amqp-logger
   - key-auth
   - limit-conn
   - limit-count

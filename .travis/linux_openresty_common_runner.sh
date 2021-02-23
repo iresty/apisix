@@ -39,6 +39,10 @@ before_install() {
 
     # start skywalking
     docker run --rm --name skywalking -d -p 1234:1234 -p 11800:11800 -p 12800:12800 apache/skywalking-oap-server
+
+    # start RabbitMQ
+    docker pull rabbitmq:3-management
+    docker run --rm -d  -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 }
 
 do_install() {

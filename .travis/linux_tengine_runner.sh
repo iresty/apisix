@@ -36,6 +36,10 @@ before_install() {
     sleep 5
     docker exec -i kafka-server1 /opt/bitnami/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper-server:2181 --replication-factor 1 --partitions 1 --topic test2
     docker exec -i kafka-server1 /opt/bitnami/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper-server:2181 --replication-factor 1 --partitions 3 --topic test3
+
+    # start RabbitMQ
+    docker pull rabbitmq:3-management
+    docker run --rm -d  -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 }
 
 tengine_install() {

@@ -81,6 +81,7 @@ loaded plugin and sort by priority: 412 name: echo
 loaded plugin and sort by priority: 410 name: http-logger
 loaded plugin and sort by priority: 406 name: sls-logger
 loaded plugin and sort by priority: 405 name: tcp-logger
+loaded plugin and sort by priority: 404 name: amqp-logger
 loaded plugin and sort by priority: 403 name: kafka-logger
 loaded plugin and sort by priority: 401 name: syslog
 loaded plugin and sort by priority: 400 name: udp-logger
