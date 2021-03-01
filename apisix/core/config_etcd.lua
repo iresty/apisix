@@ -241,7 +241,11 @@ local function sync_data(self)
 
         else
             if not dir_res.nodes then
-                dir_res.nodes = {}
+                if dir_res.key then
+                    dir_res.nodes = { clone_tab(dir_res) }
+                else
+                    dir_res.nodes = {}
+                end
             end
 
             self.values = new_tab(#dir_res.nodes, 0)
