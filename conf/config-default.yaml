@@ -247,6 +247,7 @@ plugins:                          # plugin list (sorted in alphabetical order)
   - jwt-auth
   - kafka-logger
   - key-auth
+  - ldap-auth
   - limit-conn
   - limit-count
   - limit-req

@@ -42,6 +42,9 @@ before_install() {
     # start consul servers
     docker run --rm --name consul_1 -d -p 8500:8500 consul:1.7 consul agent -server -bootstrap-expect=1 -client 0.0.0.0 -log-level info -data-dir=/consul/data
     docker run --rm --name consul_2 -d -p 8600:8500 consul:1.7 consul agent -server -bootstrap-expect=1 -client 0.0.0.0 -log-level info -data-dir=/consul/data
+
+    # start openldap server
+    docker run -d --rm --name openldap -p 1389:1389 -p 1636:1636 --env LDAP_ADMIN_USERNAME=admin --env LDAP_ADMIN_PASSWORD=adminpassword --env LDAP_USERS=user01,user02 --env LDAP_PASSWORDS=password1,password2 bitnami/openldap:latest
 }
 
 do_install() {
