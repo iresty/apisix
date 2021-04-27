@@ -230,6 +230,7 @@ graphql:
 
 plugins:                          # plugin list (sorted in alphabetical order)
   - api-breaker
+  - auth-hook
   - authz-keycloak
   - basic-auth
   - batch-requests
