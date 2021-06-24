@@ -64,6 +64,7 @@ t/lib/dubbo-backend/dubbo-backend-provider/target/
 ci/openwhisk-utilities/
 !.gitmodules
 !.markdownlint.yml
+!.travis.yml
 !.yamllint
 /conf/apisix.yaml
 /conf/apisix-*.yaml

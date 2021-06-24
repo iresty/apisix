@@ -1,0 +1,37 @@
+# only travis CI provide accesssable ARM CI for now
+dist: bionic
+sudo: required
+
+os: linux
+arch: arm64-graviton2
+services:
+  - docker
+
+language: c
+
+addons:
+  apt:
+    packages:
+      - cpanminus
+      - build-essential
+      - libncurses5-dev
+      - libreadline-dev
+      - libssl-dev
+      - perl
+
+
+cache:
+  directories:
+    - build-cache
+
+before_install:
+  - $PWD/ci/linux_openresty_common_runner.sh before_install
+
+install:
+  - $PWD/ci/linux_openresty_common_runner.sh do_install
+
+script:
+  - $PWD/ci/linux_openresty_common_runner.sh script
+
+after_success:
+  - $PWD/ci/linux_openresty_common_runner.sh after_success

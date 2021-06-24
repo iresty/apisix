@@ -30,8 +30,16 @@ echo "search apache.org" | sudo tee -a /etc/resolv.conf
 
 mkdir -p build-cache
 
+echo `uname -a`
+UNAME=`uname -a | grep -o aarch64 | wc -l`
+ARCH="amd64"
+if [ $UNAME -ne 0 ]; then
+    ARCH="arm64"
+fi
+echo $ARCH
+
 if [ ! -f "build-cache/coredns_1_8_1" ]; then
-    wget https://github.com/coredns/coredns/releases/download/v1.8.1/coredns_1.8.1_linux_amd64.tgz
+    wget https://github.com/coredns/coredns/releases/download/v1.8.1/coredns_1.8.1_linux_${ARCH}.tgz
     tar -xvf coredns_1.8.1_linux_amd64.tgz
     mv coredns build-cache/
 
