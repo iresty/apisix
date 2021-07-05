@@ -250,6 +250,7 @@ GET /hello HTTP/1.1
 uri: /plugin_proxy_rewrite
 host: apisix.iresty.com
 scheme: http
+method: GET
 --- no_error_log
 [error]
 
@@ -303,6 +304,7 @@ GET /hello HTTP/1.1
 uri: /plugin_proxy_rewrite
 host: test.com
 scheme: https
+method: GET
 --- no_error_log
 [error]
 
@@ -675,6 +677,7 @@ GET /test/plugin/proxy/rewrite HTTP/1.1
 uri: /plugin_proxy_rewrite
 host: localhost
 scheme: http
+method: GET
 --- no_error_log
 [error]
 
@@ -1370,3 +1373,108 @@ host: test.com:6443
 x-real-ip: 127.0.0.1
 --- no_error_log
 [error]
+
+
+
+=== TEST 47: set route(rewrite HTTP method)
+--- config
+    location /t {
+        content_by_lua_block {
+            local t = require("lib.test_admin").test
+            local code, body = t('/apisix/admin/routes/1',
+                 ngx.HTTP_PUT,
+                 [[{
+                        "methods": ["GET"],
+                        "plugins": {
+                            "proxy-rewrite": {
+                                "uri": "/plugin_proxy_rewrite",
+                                "method": "POST"
+                            }
+                        },
+                        "upstream": {
+                            "nodes": {
+                                "127.0.0.1:1980": 1
+                            },
+                            "type": "roundrobin"
+                        },
+                        "uri": "/hello"
+                }]]
+                )
+
+            if code >= 300 then
+                ngx.status = code
+            end
+            ngx.say(body)
+        }
+    }
+--- request
+GET /t
+--- response_body
+passed
+--- no_error_log
+[error]
+
+
+
+=== TEST 48: rewrite HTTP method (GET to POST)
+--- request
+GET /hello
+--- response_body
+uri: /plugin_proxy_rewrite
+host: localhost
+scheme: http
+method: POST
+--- error_log eval
+qr/changed HTTP method from GET to POST/
+
+
+
+=== TEST 49: set route(rewrite HTTP method)
+--- config
+    location /t {
+        content_by_lua_block {
+            local t = require("lib.test_admin").test
+            local code, body = t('/apisix/admin/routes/1',
+                 ngx.HTTP_PATCH,
+                 [[{
+                        "plugins": {
+                            "proxy-rewrite": {
+                                "uri": "/plugin_proxy_rewrite",
+                                "method": "PUT"
+                            }
+                        },
+                        "upstream": {
+                            "nodes": {
+                                "127.0.0.1:1980": 1
+                            },
+                            "type": "roundrobin"
+                        },
+                        "uri": "/hello"
+                }]]
+                )
+
+            if code >= 300 then
+                ngx.status = code
+            end
+            ngx.say(body)
+        }
+    }
+--- request
+GET /t
+--- response_body
+passed
+--- no_error_log
+[error]
+
+
+
+=== TEST 50: rewrite HTTP method (GET to PUT)
+--- request
+GET /hello
+--- response_body
+uri: /plugin_proxy_rewrite
+host: localhost
+scheme: http
+method: PUT
+--- error_log eval
+qr/changed HTTP method from GET to PUT/

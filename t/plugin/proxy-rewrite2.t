@@ -175,3 +175,14 @@ GET /echo
 X-Forwarded-Proto: grpc
 --- response_headers
 X-Forwarded-Proto: https
+
+=== TEST 6: rewrite HTTP method (GET to PUT)
+--- request
+GET /hello
+--- response_body
+uri: /plugin_proxy_rewrite
+host: localhost
+scheme: http
+method: GET
+--- error_log eval
+qr/changed HTTP method from GET to PUT/

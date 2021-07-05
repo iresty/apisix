@@ -42,6 +42,7 @@ proxy-rewrite 是上游代理信息重写插件，支持对 `scheme`、`uri`、`
 | regex_uri | array[string] | 可选        |         |                   | 转发到上游的新 `uri` 地址, 使用正则表达式匹配来自客户端的uri，当匹配成功后使用模板替换转发到上游的uri, 未匹配成功时将客户端请求的uri转发至上游。当`uri`和`regex_uri`同时存在时，`uri`优先被使用。例如：["^/iresty/(.*)/(.*)/(.*)","/$1-$2-$3"] 第一个元素代表匹配来自客户端请求的uri正则表达式，第二个元素代表匹配成功后转发到上游的uri模板。 |
 | host      | string        | 可选        |         |                   | 转发到上游的新 `host` 地址，例如：`iresty.com` 。                                                                                                                                                                                                                                                        |
 | headers   | object        | 可选        |         |                   | 转发到上游的新`headers`，可以设置多个。头信息如果存在将重写，不存在则添加。想要删除某个 header 的话，把对应的值设置为空字符串即可。支持使用 Nginx 的变量，需要以 `$` 开头，如 `client_addr: $remote_addr` ：表示请求头 `client_addr` 为客户端IP。                                                                               |
+| method    | string        | 可选        |       | ["GET", "POST","PUT","DELETE","PATCH","HEAD","OPTIONS","CONNECT","TRACE"] | 转发到上游的新请求方法 |
 
 ## 如何启用
 

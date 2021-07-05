@@ -42,6 +42,7 @@ The `proxy-rewrite` is an upstream proxy information rewriting plugin, which sup
 | regex_uri | array[string] | optional    |         |                   | Upstream new `uri` forwarding address. Use regular expression to match URL from client, when the match is successful, the URL template will be forwarded upstream. If the match is not successful, the URL from the client will be forwarded to the upstream. When `uri` and `regex_uri` are both exist, `uri` is used first. For example: [" ^/iresty/(.*)/(.*)/(.*)", "/$1-$2-$3"], the first element represents the matching regular expression and the second element represents the URL template that is forwarded to the upstream. |
 | host      | string        | optional    |         |                   | Upstream new `host` forwarding address, example `iresty.com`. |
 | headers   | object        | optional    |         |                   | Forward to the new `headers` of the upstream, can set up multiple. If it exists, will rewrite the header, otherwise will add the header. You can set the corresponding value to an empty string to remove a header. Support the use of Nginx variables. Need to start with `$`, such as `client_addr: $remote_addr`: it means that the request header `client_addr` is the client IP. |
+| method    | string        | optional    |         | ["GET", "POST","PUT","DELETE","PATCH","HEAD","OPTIONS","CONNECT","TRACE"] | New HTTP method.                        |
 
 ## How To Enable
 

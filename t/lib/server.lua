@@ -81,6 +81,7 @@ function _M.plugin_proxy_rewrite()
     ngx.say("uri: ", ngx.var.uri)
     ngx.say("host: ", ngx.var.host)
     ngx.say("scheme: ", ngx.var.scheme)
+    ngx.say("method: ", ngx.var.request_method)
 end
 
 
