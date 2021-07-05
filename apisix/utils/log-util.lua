@@ -24,6 +24,8 @@ local lru_log_format = core.lrucache.new({
     ttl = 300, count = 512
 })
 
+local open = io.open
+
 local _M = {}
 _M.metadata_schema_log_format = {
     type = "object",
@@ -118,7 +120,10 @@ local function get_full_log(ngx, conf)
         else
             local body_file = ngx.req.get_body_file()
             if body_file then
-                log.request.body_file = body_file
+                local file = open(body_file, "rb")
+                local content = file:read "*a"
+                file:close()
+                log.request.body_file = content
             end
         end
     end
