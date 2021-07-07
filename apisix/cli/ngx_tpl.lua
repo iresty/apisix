@@ -214,14 +214,20 @@ http {
     {% if http.enable_access_log == false then %}
     access_log off;
     {% else %}
-    log_format main escape={* http.access_log_format_escape *} '{* http.access_log_format *}';
     uninitialized_variable_warn off;
+    {% for _, log_item in ipairs(http.access_log) do %}
+    log_format {*log_item.log_format_name*} {% if log_item.log_format_escape then %} escape={* http.access_log_format_escape *}{% else %} escape=default{% end %} '{* log_item.log_format *}';
+    {% if log_item.log_type == "local" then %}
+    access_log {* log_item.log_path *} {* log_item.log_format_name *} buffer={*log_item.log_buffer*} flush={*log_item.log_flush*};
+    {% elseif log_item.log_type == "syslog" then %}
+    access_log syslog:server={* log_item.log_server *}:{* log_item.log_port *},{% if log_item.log_nohostname then %}nohostname,{% end %}{% if log_item.log_severity then %}severity={* log_item.log_severity *},{% end %}{% if log_item.log_facility then %}facility={* log_item.log_facility *},{% end %}tag={% if log_item.log_tag then %}{*log_item.log_tag*}{% else %}apisix{% end %} {* log_item.log_format_name *};
+
+    {% end %}
 
     {% if use_apisix_openresty then %}
     apisix_delay_client_max_body_check on;
     {% end %}
 
-    access_log {* http.access_log *} main buffer=16384 flush=3;
     {% end %}
     open_file_cache  max=1000 inactive=60;
     client_max_body_size {* http.client_max_body_size *};

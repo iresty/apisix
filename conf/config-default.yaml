@@ -169,9 +169,27 @@ nginx_config:                     # config for render the template to generate n
 
   http:
     enable_access_log: true        # enable access log or not, default true
-    access_log: "logs/access.log"
-    access_log_format: "$remote_addr - $remote_user [$time_local] $http_host \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" $upstream_addr $upstream_status $upstream_response_time \"$upstream_scheme://$upstream_host$upstream_uri\""
-    access_log_format_escape: default       # allows setting json or default characters escaping in variables
+    access_log:
+      -
+        log_type: "local"               # local disk log storage
+        log_format: "$remote_addr - $remote_user [$time_local] $http_host \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" $upstream_addr $upstream_status $upstream_response_time \"$upstream_scheme://$upstream_host$upstream_uri\""
+        log_format_name: "main_local"
+        log_format_escape: "default"    # allows setting json or default characters escaping in variables
+        log_path: "logs/access.log"     # disk storage path
+        log_buffer: 16384               # the buffer size write to log file
+        log_flush: 3                    # the expire time to flush buffer
+      -
+        log_type: "syslog"              # send log to remote syslog 
+        log_format: "$remote_addr - $remote_user [$time_local] $http_host \"$request\" $status $body_bytes_sent $request_time \"$http_referer\" \"$http_user_agent\" $upstream_addr $upstream_status $upstream_response_time \"$upstream_scheme://$upstream_host$upstream_uri\""
+        log_format_name: "main_syslog"
+        log_format_escape: "default"    # allows setting json or default characters escaping in variables
+        log_server: "127.0.0.1"         # remote syslog server
+        log_port: 5000                  # remote syslog port
+        log_tag: "apisix"               # remote syslog tag
+        log_nohostname: true            # Disables adding the “hostname” field into the syslog message header
+        log_severity: "info"            # severity of syslog messages
+        log_facility: "local7"          # facility of syslog messages
+
     keepalive_timeout: 60s         # timeout during which a keep-alive client connection will stay open on the server side.
     client_header_timeout: 60s     # timeout for reading client request header, then 408 (Request Time-out) error is returned to the client
     client_body_timeout: 60s       # timeout for reading client request body, then 408 (Request Time-out) error is returned to the client
