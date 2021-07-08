@@ -55,7 +55,10 @@ local function new_redis_cluster(conf)
                         .. " err: " .. err
         end
 
-        config.serv_list[i] = {ip = host, port = port}
+        config.serv_list[i] = {
+            ip = host, 
+            port = port,
+        }
     end
 
     local red_cli, err = rediscluster:new(config)
@@ -74,8 +77,11 @@ function _M.new(plugin_name, limit, window, conf)
     end
 
     local self = {
-        limit = limit, window = window, conf = conf,
-        plugin_name = plugin_name, red_cli =red_cli
+        limit = limit, 
+        window = window, 
+        conf = conf,
+        plugin_name = plugin_name, 
+        red_cli =red_cli,
     }
 
     return setmetatable(self, mt)
