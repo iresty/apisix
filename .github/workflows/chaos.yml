@@ -19,14 +19,14 @@ jobs:
         with:
           submodules: recursive
 
-      - name: setup go
+      - name: Setup go
         uses: actions/setup-go@v2.1.3
         with:
           go-version: "1.14"
 
       - name: Creating minikube cluster
         run: |
-          bash ./t/chaos/setup_chaos_utils.sh start_minikube
+          bash ./t/chaos/utils/setup_chaos_utils.sh start_minikube
           wget https://raw.githubusercontent.com/apache/apisix-docker/master/alpine-local/Dockerfile
           mkdir logs
           docker build -t apache/apisix:alpine-local --build-arg APISIX_PATH=. -f Dockerfile .
@@ -40,30 +40,35 @@ jobs:
           kubectl get pods -n kube-system
           kubectl version
 
-      - name: Deploy Etcd Operator
+      - name: Deploy etcd with Helm
         run: |
-          git clone https://github.com/api7/etcd-operator.git --depth 1
-          bash etcd-operator/example/rbac/create_role.sh
-          kubectl create -f etcd-operator/example/deployment.yaml
-          bash ./t/chaos/setup_chaos_utils.sh ensure_pods_ready etcd-operator "True" 30
-          kubectl create -f etcd-operator/example/example-etcd-cluster.yaml
-          bash ./t/chaos/setup_chaos_utils.sh ensure_pods_ready etcd "True True True" 30
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm install etcd bitnami/etcd --set replicaCount=3 --set auth.rbac.enabled=false
+          kubectl wait pods -l app.kubernetes.io/instance=etcd --for=condition=Ready --timeout=300s --all
+
 
       - name: Deploy APISIX
         run: |
-          bash ./t/chaos/setup_chaos_utils.sh modify_config
+          bash ./t/chaos/utils/setup_chaos_utils.sh modify_config
           kubectl create configmap apisix-gw-config.yaml --from-file=./conf/config.yaml
           kubectl apply -f ./kubernetes/deployment.yaml
           kubectl apply -f ./kubernetes/service.yaml
-          bash ./t/chaos/setup_chaos_utils.sh ensure_pods_ready apisix-gw "True" 30
+          kubectl wait pods -l app=apisix-gw --for=condition=Ready --timeout=300s
           kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml
-          bash ./t/chaos/setup_chaos_utils.sh ensure_pods_ready httpbin "True" 30
-          nohup kubectl port-forward svc/apisix-gw-lb 9080:9080 >/dev/null 2>&1 &
+          kubectl wait pods -l app=httpbin --for=condition=Ready --timeout=300s
+          bash ./t/chaos/utils/setup_chaos_utils.sh port_forward
 
-      - name: Deploy Chaos mesh
+      - name: Deploy Chaos Mesh
         run: |
-          curl -sSL https://mirrors.chaos-mesh.org/v1.1.1/install.sh | bash
+          curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash
 
-      - name: run test
+
+      - name: Install Ginkgo
+        run: |
+          go get -u github.com/onsi/ginkgo/ginkgo
+          sudo cp ~/go/bin/ginkgo /usr/local/bin
+
+      - name: Run test
         working-directory: ./t/chaos
-        run: go test -v
+        run: ginkgo -r --v --progress --trace

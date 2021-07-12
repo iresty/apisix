@@ -35,7 +35,7 @@ modify_config() {
   - ${DNS_IP}
 etcd:
   host:
-  - \"http://etcd-cluster-client.default.svc.cluster.local:2379\"
+  - \"http://etcd.default.svc.cluster.local:2379\"
 plugin_attr:
   prometheus:
     enable_export_server: false
@@ -43,25 +43,11 @@ plugin_attr:
     sed -i -e 's/apisix:latest/apisix:alpine-local/g' kubernetes/deployment.yaml
 }
 
-ensure_pods_ready() {
-    local app=$1
-    local status=$2
-    local retries=$3
-
-    count=0
-    while [[ $(kubectl get pods -l app=${app} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != ${status} ]];
-    do
-        echo "Waiting for pod running" && sleep 10;
-
-        ((count=count+1))
-        if [ $count -gt ${retries} ]; then
-            printf "Waiting for pod status running timeout\n"
-            kubectl describe pod -l app=${app}
-            printf "\n\n"
-            kubectl logs -l app=${app}
-            exit 1
-        fi
-    done
+port_forward() {
+    apisix_pod_name=$(kubectl get pod -l app=apisix-gw -o 'jsonpath={.items[0].metadata.name}')
+    nohup kubectl port-forward svc/apisix-gw-lb 9080:9080 >/dev/null 2>&1 &
+    nohup kubectl port-forward $apisix_pod_name 9091:9091 >/dev/null 2>&1 &
+    ps aux | grep '[p]ort-forward'
 }
 
 "$@"

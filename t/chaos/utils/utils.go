@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package chaos
+package utils
 
 import (
 	"fmt"
@@ -24,23 +24,24 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gavv/httpexpect/v2"
-	. "github.com/onsi/gomega"
+	"github.com/gavv/httpexpect"
+	"github.com/onsi/gomega"
 )
 
 var (
 	token = "edd1c9f034335f136f87ad84b625c8f1"
-	host  = "http://127.0.0.1:9080"
+	Host  = "http://127.0.0.1:9080"
 )
 
 type httpTestCase struct {
-	E            *httpexpect.Expect
-	Method       string
-	Path         string
-	Body         string
-	Headers      map[string]string
-	ExpectStatus int
-	ExpectBody   string
+	E                 *httpexpect.Expect
+	Method            string
+	Path              string
+	Body              string
+	Headers           map[string]string
+	ExpectStatus      int
+	ExpectBody        string
+	ExpectStatusRange httpexpect.StatusRange
 }
 
 func caseCheck(tc httpTestCase) *httpexpect.Response {
@@ -51,6 +52,8 @@ func caseCheck(tc httpTestCase) *httpexpect.Response {
 		req = e.GET(tc.Path)
 	case http.MethodPut:
 		req = e.PUT(tc.Path)
+	case http.MethodDelete:
+		req = e.DELETE(tc.Path)
 	default:
 		panic("invalid HTTP method")
 	}
@@ -70,6 +73,10 @@ func caseCheck(tc httpTestCase) *httpexpect.Response {
 		resp.Status(tc.ExpectStatus)
 	}
 
+	if tc.ExpectStatusRange != 0 {
+		resp.StatusRange(tc.ExpectStatusRange)
+	}
+
 	if tc.ExpectBody != "" {
 		resp.Body().Contains(tc.ExpectBody)
 	}
@@ -77,7 +84,7 @@ func caseCheck(tc httpTestCase) *httpexpect.Response {
 	return resp
 }
 
-func setRoute(e *httpexpect.Expect, expectStatus int) {
+func SetRoute(e *httpexpect.Expect, expectStatusRange httpexpect.StatusRange) {
 	caseCheck(httpTestCase{
 		E:       e,
 		Method:  http.MethodPut,
@@ -95,11 +102,11 @@ func setRoute(e *httpexpect.Expect, expectStatus int) {
 				 "type": "roundrobin"
 			 }
 		 }`,
-		ExpectStatus: expectStatus,
+		ExpectStatusRange: expectStatusRange,
 	})
 }
 
-func getRoute(e *httpexpect.Expect, expectStatus int) {
+func GetRoute(e *httpexpect.Expect, expectStatus int) {
 	caseCheck(httpTestCase{
 		E:            e,
 		Method:       http.MethodGet,
@@ -108,7 +115,7 @@ func getRoute(e *httpexpect.Expect, expectStatus int) {
 	})
 }
 
-func getRouteList(e *httpexpect.Expect, expectStatus int) {
+func GetRouteList(e *httpexpect.Expect, expectStatus int) {
 	caseCheck(httpTestCase{
 		E:            e,
 		Method:       http.MethodGet,
@@ -119,17 +126,16 @@ func getRouteList(e *httpexpect.Expect, expectStatus int) {
 	})
 }
 
-func deleteRoute(e *httpexpect.Expect, expectStatus int) {
+func DeleteRoute(e *httpexpect.Expect) {
 	caseCheck(httpTestCase{
-		E:            e,
-		Method:       http.MethodDelete,
-		Path:         "/apisix/admin/routes/1",
-		Headers:      map[string]string{"X-API-KEY": token},
-		ExpectStatus: expectStatus,
+		E:       e,
+		Method:  http.MethodDelete,
+		Path:    "/apisix/admin/routes/1",
+		Headers: map[string]string{"X-API-KEY": token},
 	})
 }
 
-func testPrometheusEtcdMetric(e *httpexpect.Expect, expectEtcd int) {
+func TestPrometheusEtcdMetric(e *httpexpect.Expect, expectEtcd int) {
 	caseCheck(httpTestCase{
 		E:          e,
 		Method:     http.MethodGet,
@@ -139,7 +145,7 @@ func testPrometheusEtcdMetric(e *httpexpect.Expect, expectEtcd int) {
 }
 
 // get the first line which contains the key
-func getPrometheusMetric(e *httpexpect.Expect, g *WithT, key string) string {
+func getPrometheusMetric(e *httpexpect.Expect, key string) string {
 	resp := caseCheck(httpTestCase{
 		E:      e,
 		Method: http.MethodGet,
@@ -154,29 +160,29 @@ func getPrometheusMetric(e *httpexpect.Expect, g *WithT, key string) string {
 		}
 	}
 	targetSlice := strings.Fields(targetLine)
-	g.Expect(len(targetSlice) == 2).To(BeTrue())
+	gomega.Ω(len(targetSlice)).Should(gomega.BeNumerically("==", 2))
 	return targetSlice[1]
 }
 
-func getEgressBandwidthPerSecond(e *httpexpect.Expect, g *WithT) (float64, float64) {
+func GetEgressBandwidthPerSecond(e *httpexpect.Expect) (float64, float64) {
 	key := "apisix_bandwidth{type=\"egress\","
-	bandWidthString := getPrometheusMetric(e, g, key)
+	bandWidthString := getPrometheusMetric(e, key)
 	bandWidthStart, err := strconv.ParseFloat(bandWidthString, 64)
-	g.Expect(err).To(BeNil())
+	gomega.Expect(err).To(gomega.BeNil())
 	// after etcd got killed, it would take longer time to get the metrics
 	// so need to calculate the duration
 	timeStart := time.Now()
 
 	time.Sleep(10 * time.Second)
-	bandWidthString = getPrometheusMetric(e, g, key)
+	bandWidthString = getPrometheusMetric(e, key)
 	bandWidthEnd, err := strconv.ParseFloat(bandWidthString, 64)
-	g.Expect(err).To(BeNil())
-	duration := time.Now().Sub(timeStart)
+	gomega.Expect(err).To(gomega.BeNil())
+	duration := time.Since(timeStart)
 
 	return bandWidthEnd - bandWidthStart, duration.Seconds()
 }
 
-func roughCompare(a float64, b float64) bool {
+func RoughCompare(a float64, b float64) bool {
 	ratio := a / b
 	if ratio < 1.3 && ratio > 0.7 {
 		return true
@@ -188,7 +194,7 @@ type silentPrinter struct {
 	logger httpexpect.Logger
 }
 
-func newSilentPrinter(logger httpexpect.Logger) silentPrinter {
+func NewSilentPrinter(logger httpexpect.Logger) silentPrinter {
 	return silentPrinter{logger}
 }
 
