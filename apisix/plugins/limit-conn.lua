@@ -129,6 +129,7 @@ function _M.log(conf, ctx)
     end
 
     core.tablepool.release("plugin#limit-conn", limit_conn)
+    ctx.limit_conn = nil
     return
 end
 
