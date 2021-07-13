@@ -823,6 +823,11 @@ function _M.stream_init_worker()
         core.config.init_worker()
     end
 
+    local discovery = require("apisix.discovery.init").discovery
+    if discovery and discovery.init_worker then
+        discovery.init_worker()
+    end
+
     load_balancer = require("apisix.balancer")
 
     local_conf = core.config.local_conf()

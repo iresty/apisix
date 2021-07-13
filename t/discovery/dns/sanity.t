@@ -284,3 +284,37 @@ qr/proxy request to \S+/
 --- grep_error_log_out
 proxy request to 127.0.0.1:1979
 proxy request to 127.0.0.2:1980
+
+
+
+=== TEST 14: Stream Discovery
+--- yaml_config
+apisix:
+    node_listen: 1984
+    config_center: yaml
+    enable_admin: false
+    enable_resolv_search_option: false
+    stream_proxy:
+        tcp:
+         - addr: 1985
+discovery:
+    dns:
+        servers:
+         - "127.0.0.1:1053"
+--- apisix_yaml
+stream_routes:
+    - id: 1
+      server_port: 1985
+      upstream_id: 1
+upstreams:
+    - service_name: "zero-weight.srv.test.local"
+      discovery_type: dns
+      type: roundrobin
+      id: 1
+--- stream_enable
+--- stream_request eval
+"\47\45\54\20\2f\68\65\6c\6c\6f\20\48\54\54\50\2f\31\2e\31\0d\0a\48\6f\73\74\3a\20\31\32\37\2e\30\2e\30\2e\31\3a\31\39\38\35\0d\0a\0d\0a"
+--- stream_response
+hello world
+--- no_error_log
+[error]
