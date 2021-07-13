@@ -35,7 +35,9 @@ We will use the following `echo` endpoint as an example, which will return the p
 
 **Request**
 
-The request URL consists of these parameters:
+The request URL consists of these components:
+
+![RequestURL](../../assets/images/requesturl.jpg)
 
 - Protocol: the network transport protocol, `HTTP` protocol is used in our example.
 - Port: The port, `80` is used in our example.
