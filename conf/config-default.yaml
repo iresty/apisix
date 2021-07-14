@@ -278,6 +278,7 @@ plugins:                          # plugin list (sorted by priority)
   - batch-requests                 # priority: 4010
   - cors                           # priority: 4000
   - ip-restriction                 # priority: 3000
+  - ua-restriction                 # priority: 2999
   - referer-restriction            # priority: 2990
   - uri-blocker                    # priority: 2900
   - request-validation             # priority: 2800

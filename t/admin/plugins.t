@@ -40,7 +40,7 @@ __DATA__
 --- request
 GET /apisix/admin/plugins/list
 --- response_body_like eval
-qr/\["client-control","ext-plugin-pre-req","zipkin","request-id","fault-injection","serverless-pre-function","batch-requests","cors","ip-restriction","referer-restriction","uri-blocker","request-validation","openid-connect","wolf-rbac","hmac-auth","basic-auth","jwt-auth","key-auth","consumer-restriction","authz-keycloak","proxy-mirror","proxy-cache","proxy-rewrite","api-breaker","limit-conn","limit-count","limit-req","server-info","traffic-split","redirect","response-rewrite","grpc-transcode","prometheus","echo","http-logger","sls-logger","tcp-logger","kafka-logger","syslog","udp-logger","example-plugin","serverless-post-function","ext-plugin-post-req"\]/
+qr/\["client-control","ext-plugin-pre-req","zipkin","request-id","fault-injection","serverless-pre-function","batch-requests","cors","ip-restriction","ua-restriction","referer-restriction","uri-blocker","request-validation","openid-connect","wolf-rbac","hmac-auth","basic-auth","jwt-auth","key-auth","consumer-restriction","authz-keycloak","proxy-mirror","proxy-cache","proxy-rewrite","api-breaker","limit-conn","limit-count","limit-req","server-info","traffic-split","redirect","response-rewrite","grpc-transcode","prometheus","echo","http-logger","sls-logger","tcp-logger","kafka-logger","syslog","udp-logger","example-plugin","serverless-post-function","ext-plugin-post-req"\]/
 --- no_error_log
 [error]
 
