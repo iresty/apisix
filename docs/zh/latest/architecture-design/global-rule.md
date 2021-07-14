@@ -45,6 +45,7 @@ curl -X PUT \
 如上所注册的 `limit-count` 插件将会作用于所有的请求。
 
 我们可以通过以下接口查看所有的 `GlobalRule`:
+当 `Route` 和 `Service` 都开启同一个插件时，Route 参数的优先级是高于 Service 的。但是`GlobalRule`优先级高于`Route`和`Service`
 
 ```shell
 curl https://{apisix_listen_address}/apisix/admin/global_rules -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1'
