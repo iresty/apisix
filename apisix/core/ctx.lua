@@ -33,10 +33,90 @@ local ipairs       = ipairs
 local type         = type
 local error        = error
 local pcall        = pcall
+local req_method   = ngx.var.request_method
+local headers      = ngx.req.get_headers()
+local core         = require("apisix.core")
 
 
 local _M = {version = 0.2}
 local GRAPHQL_DEFAULT_MAX_SIZE = 1048576               -- 1MiB
+
+
+
+local function explode (_str, seperator)
+    local pos, arr = 0, {}
+    for st, sp in function()
+        return string.find(_str, seperator, pos, true)
+    end do
+        table.insert(arr, string.sub(_str, pos, st - 1))
+        pos = sp + 1
+    end
+    table.insert(arr, string.sub(_str, pos))
+    return arr
+end
+
+
+local function get_request_parameter(ctx)
+    if  ctx.request_parameter then
+        return ctx.request_parameter
+    end
+
+    local request_parameter = {};
+    local in_parameter = "app_id";
+
+    local req_body,err = core.request.get_body(max_body_siz,ctx)
+
+    local args = nil;
+    if "POST" == req_method then
+
+        local content_type = headers["content-type"]
+        content_type = string.gsub(content_type, "\r\n", "");
+
+        if string.sub(content_type, 1, 19) == "multipart/form-data" then
+
+            local body =req_body;
+            local boundary = "--" .. string.sub(headers["content-type"], 31)
+            local dataTable = explode(boundary, tostring(body))
+
+            for i, v in ipairs(dataTable) do
+                local t = explode("\r\n", v)
+                if table.getn(t) == 5 then
+                    local start_pos,end_pos,param_name = string.find(t[2], 'Content%-Disposition: form%-data; name="(.*)"')
+                    if param_name == in_parameter then
+                        request_parameter[param_name] = t[4]
+                    end
+                end
+            end
+
+
+        elseif string.sub(content_type, 1, 34) == "application/x-www-form-urlencoded" then
+            args = req_body;
+            for key, value in pairs(args) do
+                if tostring(key) == in_parameter then
+                    request_parameter[param_name] = tostring(value)
+                end
+            end
+
+        elseif string.sub(content_type, 1, 16) == "application/json" then
+            local json = req_body;
+            if json ~= nil then
+                args = core.json.decode(json)
+
+                for key, value in pairs(args) do
+                    if tostring(key) == in_parameter then
+                        request_parameter[param_name] = tostring(value)
+                    end
+                end
+
+            end
+
+        end
+    end
+
+
+    return ctx.request_parameter
+
+end
 
 
 local function parse_graphql(ctx)
@@ -194,6 +274,8 @@ do
             elseif key == "balancer_port" then
                 val = ngx.ctx.api_ctx and ngx.ctx.api_ctx.balancer_port
 
+            elseif core_str.has_prefix(key, "req_body_data") then
+                val = get_request_parameter(t)
             else
                 val = get_var(key, t._request)
             end
