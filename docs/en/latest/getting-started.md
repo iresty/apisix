@@ -75,7 +75,7 @@ curl --location --request GET "http://httpbin.org/get?foo1=bar1&foo2=bar2"
 - We use the [curl](https://curl.se/docs/manpage.html) command for API testing. You can also use other tools such as [Postman](https://www.postman.com/) for testing.
 
 :::note Note
-If you already have Apache APISIX installed, please skip Step 1, and go to [Step 2](getting-started.md#Step-2-Create-a-Route) directly.
+If you already have Apache APISIX installed, please skip Step 1, and go to [Step 2](getting-started.md#step-2-create-a-route) directly.
 :::
 
 ## Step 1: Install Apache APISIX

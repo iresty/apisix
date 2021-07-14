@@ -25,7 +25,7 @@ title: 快速入门指南
 
 本文是 Apache APISIX 的快速入门指南。快速入门分为三个步骤：
 
-1. 通过[Docker Compose](https://docs.docker.com/compose/) 安装 Apache APISIX。
+1. 通过 [Docker Compose](https://docs.docker.com/compose/) 安装 Apache APISIX。
 1. 创建路由并绑定上游。
 1. 使用命令行语句 `curl` 验证绑定之后返回的结果是否符合预期。
 
@@ -75,7 +75,7 @@ curl --location --request GET "http://httpbin.org/get?foo1=bar1&foo2=bar2"
 - 本文使用 [curl](https://curl.se/docs/manpage.html) 命令行进行 API 测试。您也可以使用其他工具例如 [Postman](https://www.postman.com/)等，进行测试。
 
 :::note 说明
-如果您已经安装了 Apache APISIX，请直接阅读 [第二步](getting-started.md#第二步-创建一个-Route)
+如果您已经安装了 Apache APISIX，请直接阅读 [第二步](getting-started.md#第二步：创建路由)
 :::
 
 ## 第一步：安装 Apache APISIX
