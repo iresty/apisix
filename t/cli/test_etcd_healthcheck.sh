@@ -25,6 +25,10 @@ ETCD_NAME_1=etcd1
 ETCD_NAME_2=etcd2
 HEALTH_CHECK_RETRY_TIMEOUT=10
 
+if [ -z "logs/error.log" ]; then
+    git checkout logs/error.log
+fi
+
 echo '
 etcd:
   host:
@@ -76,7 +80,7 @@ docker start ${ETCD_NAME_0} && docker start ${ETCD_NAME_1} && docker start ${ETC
 
 # sleep till etcd health check try to check again
 current_time=$(date +%s)
-sleep_seconds=$(( $sleep_till - $current_time ))
+sleep_seconds=$(( $sleep_till - $current_time + 3))
 if [ "$sleep_seconds" -gt 0 ]; then
     sleep $sleep_seconds
 fi
@@ -84,6 +88,8 @@ fi
 code=$(curl -o /dev/null -s -w %{http_code} http://127.0.0.1:9080/apisix/admin/routes -H 'X-API-KEY: edd1c9f034335f136f87ad84b625c8f1')
 if [ ! $code -eq 200 ]; then
     echo "failed: apisix could not recover when etcd node recover"
+    docker ps
+    cat logs/error.log
     exit 1
 fi
 
