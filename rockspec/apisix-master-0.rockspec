@@ -67,6 +67,7 @@ dependencies = {
     "lua-resty-consul = 0.3-2",
     "penlight = 1.9.2-1",
     "ext-plugin-proto = 0.1.1",
+    "api7-snowflake = 2.0-1",
 }
 
 build = {

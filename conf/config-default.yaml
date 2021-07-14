@@ -344,3 +344,13 @@ plugin_attr:
     report_ttl: 3600     # live time for server info in etcd (unit: second)
   dubbo-proxy:
     upstream_multiplex_count: 32
+  request-id:
+    snowflake:
+      enable: false
+      snowflake_epoc: 1609459200000   # the starting timestamp is expressed in milliseconds
+      data_machine_bits: 12           # data machine bit, maximum 31, because Lua cannot do bit operations greater than 31
+      sequence_bits: 10               # each machine generates a maximum of (1 << sequence_bits) serial numbers per millisecond
+      delta_offset: 1                 # timestamp delta offset (unit: milliseconds)
+      data_machine_ttl: 30            # live time for data_machine in etcd (unit: second)
+      data_machine_interval: 10       # lease renewal interval in etcd (unit: second)
+
